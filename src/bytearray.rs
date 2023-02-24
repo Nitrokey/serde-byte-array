@@ -1,3 +1,4 @@
+use core::array::TryFromSliceError;
 use core::borrow::{Borrow, BorrowMut};
 use core::cmp::Ordering;
 use core::convert::TryInto;
@@ -87,6 +88,23 @@ impl<'a, const N: usize> From<&'a ByteArray<N>> for &'a [u8; N] {
     fn from(bytes: &'a ByteArray<N>) -> &'a [u8; N] {
         // Safety: #[repr(transparent)]
         unsafe { mem::transmute::<&'a ByteArray<N>, &'a [u8; N]>(bytes) }
+    }
+}
+
+impl<'a, const N: usize> TryFrom<&'a [u8]> for ByteArray<N> {
+    type Error = TryFromSliceError;
+    fn try_from(bytes: &'a [u8]) -> Result<Self, TryFromSliceError> {
+        Ok(Self {
+            bytes: bytes.try_into()?,
+        })
+    }
+}
+
+impl<'a, const N: usize> TryFrom<&'a [u8]> for &'a ByteArray<N> {
+    type Error = TryFromSliceError;
+    fn try_from(bytes: &'a [u8]) -> Result<Self, TryFromSliceError> {
+        let tmp: &'a [u8; N] = bytes.try_into()?;
+        Ok(tmp.into())
     }
 }
 
