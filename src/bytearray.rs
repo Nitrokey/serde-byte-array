@@ -35,7 +35,7 @@ use serde::ser::{Serialize, Serializer};
 /// #     deserialize_bytearrays().unwrap();
 /// # }
 /// ```
-#[derive(Clone, Eq, Ord)]
+#[derive(Copy, Clone, Eq, Ord)]
 #[repr(transparent)]
 pub struct ByteArray<const N: usize> {
     bytes: [u8; N],
