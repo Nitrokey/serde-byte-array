@@ -131,6 +131,18 @@ impl<const N: usize> AsMut<[u8; N]> for ByteArray<N> {
     }
 }
 
+impl<const N: usize> AsRef<[u8]> for ByteArray<N> {
+    fn as_ref(&self) -> &[u8] {
+        &self.bytes
+    }
+}
+
+impl<const N: usize> AsMut<[u8]> for ByteArray<N> {
+    fn as_mut(&mut self) -> &mut [u8] {
+        &mut self.bytes
+    }
+}
+
 impl<const N: usize> Borrow<[u8; N]> for ByteArray<N> {
     fn borrow(&self) -> &[u8; N] {
         &self.bytes
@@ -161,7 +173,7 @@ where
     Rhs: ?Sized + Borrow<[u8; N]>,
 {
     fn eq(&self, other: &Rhs) -> bool {
-        self.as_ref().eq(other.borrow())
+        (**self).eq(other.borrow())
     }
 }
 
@@ -170,7 +182,7 @@ where
     Rhs: ?Sized + Borrow<[u8; N]>,
 {
     fn partial_cmp(&self, other: &Rhs) -> Option<Ordering> {
-        self.as_ref().partial_cmp(other.borrow())
+        (**self).partial_cmp(other.borrow())
     }
 }
 
