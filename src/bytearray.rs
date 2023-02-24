@@ -154,6 +154,17 @@ impl<const N: usize> BorrowMut<[u8; N]> for ByteArray<N> {
     }
 }
 
+impl<const N: usize> Borrow<[u8]> for ByteArray<N> {
+    fn borrow(&self) -> &[u8] {
+        &self.bytes
+    }
+}
+impl<const N: usize> BorrowMut<[u8]> for ByteArray<N> {
+    fn borrow_mut(&mut self) -> &mut [u8] {
+        &mut self.bytes
+    }
+}
+
 impl<const N: usize> Deref for ByteArray<N> {
     type Target = [u8; N];
 
