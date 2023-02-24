@@ -1,3 +1,4 @@
+use core::array::TryFromSliceError;
 use core::borrow::{Borrow, BorrowMut};
 use core::cmp::Ordering;
 use core::convert::TryInto;
@@ -90,6 +91,23 @@ impl<'a, const N: usize> From<&'a ByteArray<N>> for &'a [u8; N] {
     }
 }
 
+impl<'a, const N: usize> TryFrom<&'a [u8]> for ByteArray<N> {
+    type Error = TryFromSliceError;
+    fn try_from(bytes: &'a [u8]) -> Result<Self, TryFromSliceError> {
+        Ok(Self {
+            bytes: bytes.try_into()?,
+        })
+    }
+}
+
+impl<'a, const N: usize> TryFrom<&'a [u8]> for &'a ByteArray<N> {
+    type Error = TryFromSliceError;
+    fn try_from(bytes: &'a [u8]) -> Result<Self, TryFromSliceError> {
+        let tmp: &'a [u8; N] = bytes.try_into()?;
+        Ok(tmp.into())
+    }
+}
+
 impl<const N: usize> Debug for ByteArray<N> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         Debug::fmt(&self.bytes, f)
@@ -113,6 +131,18 @@ impl<const N: usize> AsMut<[u8; N]> for ByteArray<N> {
     }
 }
 
+impl<const N: usize> AsRef<[u8]> for ByteArray<N> {
+    fn as_ref(&self) -> &[u8] {
+        &self.bytes
+    }
+}
+
+impl<const N: usize> AsMut<[u8]> for ByteArray<N> {
+    fn as_mut(&mut self) -> &mut [u8] {
+        &mut self.bytes
+    }
+}
+
 impl<const N: usize> Borrow<[u8; N]> for ByteArray<N> {
     fn borrow(&self) -> &[u8; N] {
         &self.bytes
@@ -120,6 +150,17 @@ impl<const N: usize> Borrow<[u8; N]> for ByteArray<N> {
 }
 impl<const N: usize> BorrowMut<[u8; N]> for ByteArray<N> {
     fn borrow_mut(&mut self) -> &mut [u8; N] {
+        &mut self.bytes
+    }
+}
+
+impl<const N: usize> Borrow<[u8]> for ByteArray<N> {
+    fn borrow(&self) -> &[u8] {
+        &self.bytes
+    }
+}
+impl<const N: usize> BorrowMut<[u8]> for ByteArray<N> {
+    fn borrow_mut(&mut self) -> &mut [u8] {
         &mut self.bytes
     }
 }
@@ -143,7 +184,7 @@ where
     Rhs: ?Sized + Borrow<[u8; N]>,
 {
     fn eq(&self, other: &Rhs) -> bool {
-        self.as_ref().eq(other.borrow())
+        (**self).eq(other.borrow())
     }
 }
 
@@ -152,7 +193,7 @@ where
     Rhs: ?Sized + Borrow<[u8; N]>,
 {
     fn partial_cmp(&self, other: &Rhs) -> Option<Ordering> {
-        self.as_ref().partial_cmp(other.borrow())
+        (**self).partial_cmp(other.borrow())
     }
 }
 
