@@ -96,6 +96,12 @@ impl<const N: usize> Debug for ByteArray<N> {
     }
 }
 
+impl<const N: usize> Default for ByteArray<N> {
+    fn default() -> Self {
+        Self::new([Default::default(); N])
+    }
+}
+
 impl<const N: usize> AsRef<[u8; N]> for ByteArray<N> {
     fn as_ref(&self) -> &[u8; N] {
         &self.bytes
