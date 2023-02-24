@@ -42,7 +42,7 @@ pub struct ByteArray<const N: usize> {
 
 impl<const N: usize> ByteArray<N> {
     /// Transform an [array](https://doc.rust-lang.org/stable/std/primitive.array.html) to the equivalent `ByteArray`
-    pub fn new(bytes: [u8; N]) -> Self {
+    pub const fn new(bytes: [u8; N]) -> Self {
         Self { bytes }
     }
 
@@ -53,8 +53,13 @@ impl<const N: usize> ByteArray<N> {
         }
     }
 
+    /// Return a slice containing all bytes.
+    pub const fn as_slice(&self) -> &[u8] {
+        &self.bytes
+    }
+
     /// Unwraps the byte array underlying this `ByteArray`
-    pub fn into_array(self) -> [u8; N] {
+    pub const fn into_array(self) -> [u8; N] {
         self.bytes
     }
 }
