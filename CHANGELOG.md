@@ -1,5 +1,12 @@
 # Changelog
 
+## [v0.1.2][] (2023-27-02)
+
+- Implemet `Copy` for ByteArray ([#5][])
+
+[#5]: https://github.com/Nitrokey/serde-byte-array/pull/5
+[v0.1.1]: https://github.com/Nitrokey/serde-byte-array/releases/tag/v0.1.2
+
 ## [v0.1.1][] (2023-24-02)
 
 - Improve compatibility with slices ([#4][])
