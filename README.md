@@ -5,7 +5,7 @@ Wrapper types to enable optimized handling of `[u8; N]`
 ## Explanation
 
 Without specialization, Rust forces Serde to treat `[u8; N]` just like any
-other arary  In reality this particular array can often be serialized and 
+other array. In reality this particular array can often be serialized and
 deserialized in a more efficient, compact representation in many formats.
 
 When working with such a format, you can opt into specialized handling of
